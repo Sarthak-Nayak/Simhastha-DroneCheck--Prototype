@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrations Dashboard</title>
+    <!-- Tailwind CSS for rapid UI development -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom styles for an advanced creative UI/UX */
+        :root {
+            --glow-color: hsl(174, 91%, 49%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0c1021;
+            overflow: hidden;
+        }
+
+        /* Dynamic Aurora Background */
+        .aurora-background {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2; overflow: hidden;
+        }
+        .aurora {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); opacity: 0.6;
+        }
+        .aurora-1 { background-color: #00aaff; width: 400px; height: 400px; top: 10%; left: 15%; animation: move 20s linear infinite alternate; }
+        .aurora-2 { background-color: #ff00ff; width: 500px; height: 500px; top: 30%; left: 40%; animation: move 25s linear infinite alternate-reverse; }
+        .aurora-3 { background-color: #00ffaa; width: 350px; height: 350px; bottom: 10%; right: 15%; animation: move 18s linear infinite alternate; }
+
+        @keyframes move {
+            from { transform: translate(-100px, -50px) rotate(0deg); }
+            to { transform: translate(100px, 50px) rotate(180deg); }
+        }
+
+        .dashboard-container {
+            background: rgba(18, 23, 53, 0.4);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+            border-radius: 24px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .header-panel {
+             background: linear-gradient(to bottom right, #1e3a8a, #172554);
+             border-top-left-radius: 22px;
+             border-bottom-right-radius: 80px;
+        }
+
+        .sidebar {
+            background: linear-gradient(to bottom, #14b8a6, #059669);
+            border-top-right-radius: 22px;
+            border-bottom-right-radius: 22px;
+        }
+
+        .sidebar-button {
+            writing-mode: vertical-rl;
+            transform: rotate(180deg);
+            background-color: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+        .sidebar-button:hover {
+            background-color: rgba(255,255,255,0.4);
+        }
+        
+        .btn-glow {
+            position: relative;
+            transition: all 0.3s ease;
+            color: white;
+            background: linear-gradient(45deg, #0d9488, #14b8a6);
+            box-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color);
+        }
+        .btn-glow:before {
+            pointer-events: none; content: ""; position: absolute;
+            background: var(--glow-color); top: 120%; left: 0;
+            width: 100%; height: 100%;
+            transform: perspective(1.5em) rotateX(40deg) scale(1, 0.35);
+            filter: blur(1.5em); opacity: 0.7; transition: opacity 0.3s ease;
+        }
+        .btn-glow:hover { transform: scale(1.05); box-shadow: 0 0 10px var(--glow-color), 0 0 25px var(--glow-color); }
+        .btn-glow:hover:before { opacity: 1; }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .card-dark {
+             background-color: rgba(30, 41, 59, 0.4);
+        }
+        
+        .card:hover {
+             background-color: rgba(30, 41, 59, 0.5);
+             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        /* Animation for elements loading in */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="aurora-background">
+        <div class="aurora aurora-1"></div>
+        <div class="aurora aurora-2"></div>
+        <div class="aurora aurora-3"></div>
+    </div>
+
+    <div class="relative w-full max-w-5xl" id="dashboard-wrapper">
+        <div class="dashboard-container p-1">
+            <div class="grid grid-cols-12 grid-rows-1 w-full h-[700px] overflow-hidden rounded-2xl">
+                <!-- Main Content Area -->
+                <div class="col-span-10 flex flex-col">
+                    <!-- Header -->
+                    <div class="header-panel p-8 opacity-0 fade-in-up" style="animation-delay: 0.2s;">
+                         <div class="flex items-center space-x-4">
+                            <i class="fas fa-building-shield text-5xl text-cyan-300"></i>
+                            <h1 class="text-4xl font-bold text-white tracking-wider">ADMINISTRATIONS</h1>
+                        </div>
+                    </div>
+                    <!-- Cards Grid -->
+                    <main class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8 flex-grow">
+                        <!-- Card 1: Police Officers -->
+                        <div class="card card-dark rounded-2xl p-6 flex flex-col justify-between opacity-0 fade-in-up" style="animation-delay: 0.4s;">
+                            <h2 class="text-2xl font-bold text-white leading-tight">Information Of Police Officers</h2>
+                            <button class="btn-glow font-semibold py-2 px-4 rounded-full w-32 ml-auto text-sm">Send Alert</button>
+                        </div>
+
+                        <!-- Card 2: Gate Security -->
+                        <div class="card rounded-2xl p-6 flex flex-col justify-between opacity-0 fade-in-up" style="animation-delay: 0.6s;">
+                            <h2 class="text-2xl font-bold text-white leading-tight">Information Of Gate Security</h2>
+                            <button class="btn-glow font-semibold py-2 px-4 rounded-full w-32 ml-auto text-sm">Send Alert</button>
+                        </div>
+                        
+                        <!-- Card 3: Crowd Monitoring -->
+                         <div class="card card-dark rounded-2xl p-6 text-center flex flex-col justify-between opacity-0 fade-in-up" style="animation-delay: 0.8s;">
+                            <div>
+                                <p class="text-xs text-gray-400 mb-2">LET'S CHECK FOR</p>
+                                <h2 class="text-2xl font-bold text-white leading-tight">CROWD MONITORING AND CROWD DENSITY</h2>
+                            </div>
+                            <button class="btn-glow font-semibold py-3 px-6 rounded-full w-48 mx-auto">Click Here</button>
+                        </div>
+
+                        <!-- Card 4: Land Monitoring -->
+                        <div class="card rounded-2xl p-6 text-center flex flex-col justify-between opacity-0 fade-in-up" style="animation-delay: 1s;">
+                            <div>
+                                <p class="text-xs text-gray-400 mb-2">LET'S CHECK FOR</p>
+                                <h2 class="text-2xl font-bold text-white leading-tight">LAND MONITORING AND UNAUTHORISED CONSCTRUCTION</h2>
+                            </div>
+                            <button class="btn-glow font-semibold py-3 px-6 rounded-full w-48 mx-auto">Click Here</button>
+                        </div>
+                    </main>
+                </div>
+
+                <!-- Right Sidebar -->
+                <aside class="sidebar col-span-2 flex flex-col justify-between items-center p-4">
+                     <button class="text-white text-3xl hover:text-cyan-300 transition-colors">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button class="sidebar-button text-white font-semibold py-4 px-3 rounded-full tracking-widest">
+                        Dashboard
+                    </button>
+                    <div></div> <!-- Spacer -->
+                </aside>
+
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const wrapper = document.getElementById('dashboard-wrapper');
+        const cards = document.querySelectorAll('.card');
+
+        // Parallax effect for the main container
+        document.body.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const x = (clientX / window.innerWidth) - 0.5;
+            const y = (clientY / window.innerHeight) - 0.5;
+            
+            wrapper.style.transform = `perspective(1000px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg) scale3d(0.95, 0.95, 0.95)`;
+        });
+
+        // 3D tilt effect for cards
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                card.style.transform = `perspective(1000px) rotateX(${-y / 15}deg) rotateY(${x / 15}deg) scale3d(1.05, 1.05, 1.05)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+    </script>
+
+</body>
+</html>
