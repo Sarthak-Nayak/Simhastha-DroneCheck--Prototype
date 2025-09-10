@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police Officers Dashboard</title>
+    <!-- Tailwind CSS for rapid UI development -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for modern typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom styles for an advanced creative UI/UX */
+        :root {
+            --glow-color: hsl(174, 91%, 49%);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0c1021;
+            overflow: hidden;
+        }
+
+        /* Dynamic Aurora Background */
+        .aurora-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+        .aurora {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+        }
+        .aurora-1 { background-color: #00aaff; width: 400px; height: 400px; top: 10%; left: 15%; animation: move 20s linear infinite alternate; }
+        .aurora-2 { background-color: #ff00ff; width: 500px; height: 500px; top: 30%; left: 40%; animation: move 25s linear infinite alternate-reverse; }
+        .aurora-3 { background-color: #00ffaa; width: 350px; height: 350px; bottom: 10%; right: 15%; animation: move 18s linear infinite alternate; }
+
+        @keyframes move {
+            from { transform: translate(-100px, -50px) rotate(0deg); }
+            to { transform: translate(100px, 50px) rotate(180deg); }
+        }
+
+        .dashboard-container {
+            background: rgba(18, 23, 53, 0.4);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+            border-radius: 24px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .left-panel {
+             background: linear-gradient(to bottom right, #1e3a8a, #172554);
+             border-radius: 22px 0 0 22px;
+        }
+
+        .right-panel { background: transparent; }
+        
+        .curved-divider {
+            border-bottom-left-radius: 150px;
+            border-top-left-radius: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+        
+        .nav-item { transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .nav-item:hover { color: var(--glow-color); transform: translateY(-4px) scale(1.1); }
+        
+        .dashboard-bar {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-glow {
+            position: relative;
+            transition: all 0.3s ease;
+            color: white;
+            background: linear-gradient(45deg, #0d9488, #14b8a6);
+            box-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color);
+        }
+        .btn-glow:before {
+            pointer-events: none;
+            content: "";
+            position: absolute;
+            background: var(--glow-color);
+            top: 120%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: perspective(1.5em) rotateX(40deg) scale(1, 0.35);
+            filter: blur(1.5em);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        .btn-glow:hover { transform: scale(1.05); box-shadow: 0 0 10px var(--glow-color), 0 0 25px var(--glow-color); }
+        .btn-glow:hover:before { opacity: 1; }
+
+        .card {
+            background-color: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+        
+        .card:hover {
+             background-color: rgba(30, 41, 59, 0.5);
+             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .cctv-camera {
+            position: absolute;
+            top: -50px;
+            right: -40px;
+            width: 170px;
+            filter: drop-shadow(0 15px 12px rgba(0,0,0,0.3));
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: translateZ(50px);
+        }
+
+        .card:hover .cctv-camera { transform: translateZ(60px) rotateY(15deg) rotateX(5deg); }
+
+        /* Animation for elements loading in */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="aurora-background">
+        <div class="aurora aurora-1"></div>
+        <div class="aurora aurora-2"></div>
+        <div class="aurora aurora-3"></div>
+    </div>
+
+    <div class="relative w-full max-w-5xl" id="dashboard-wrapper">
+        <div class="dashboard-container p-1">
+            <div class="w-full h-full flex flex-col md:flex-row overflow-hidden rounded-2xl">
+                <!-- Left Panel -->
+                <div class="left-panel w-full md:w-1/3 p-8 flex flex-col justify-center opacity-0 fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="flex items-center space-x-4 mb-4">
+                         <i class="fas fa-shield-halved text-5xl text-cyan-300"></i>
+                         <h1 class="text-4xl font-bold text-white tracking-wider">Welcome Police Officers</h1>
+                    </div>
+                </div>
+
+                <!-- Right Panel -->
+                <div class="right-panel w-full md:w-2/3 md:-ml-24">
+                    <div class="curved-divider p-6 h-full">
+                        <!-- Top Navigation -->
+                         <nav class="flex justify-around items-center text-center text-gray-300 mb-6 opacity-0 fade-in-up" style="animation-delay: 0.4s;">
+                            <a href="#" class="nav-item"><i class="fas fa-home text-3xl"></i><span class="block text-xs font-semibold">HOME</span></a>
+                            <a href="#" class="nav-item"><i class="fas fa-bell text-3xl"></i><span class="block text-xs font-semibold">NOTIFICATIONS</span></a>
+                            <a href="#" class="nav-item"><i class="fas fa-user text-3xl"></i><span class="block text-xs font-semibold">USER PROFILE</span></a>
+                            <a href="#" class="nav-item"><i class="fas fa-bars text-3xl"></i><span class="block text-xs font-semibold">MENU BAR</span></a>
+                        </nav>
+                        
+                        <!-- Dashboard Bar -->
+                        <div class="dashboard-bar rounded-full p-2 flex items-center justify-between mb-8 opacity-0 fade-in-up" style="animation-delay: 0.6s;">
+                             <div class="pl-4">
+                                <button class="btn-glow text-white font-semibold py-2 px-6 rounded-full">Dashboard</button>
+                            </div>
+                        </div>
+
+                        <!-- Main Content Cards -->
+                        <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Card 1: Crowd Density -->
+                            <div class="card rounded-2xl p-6 text-center flex flex-col justify-between h-72 opacity-0 fade-in-up" style="animation-delay: 0.8s;">
+                                <div>
+                                    <p class="text-xs text-gray-400 mb-4">LET'S CHECK FOR</p>
+                                    <h2 class="text-3xl font-bold text-white leading-tight">DENSITY OF CROWD HIGH OR LOW</h2>
+                                </div>
+                                <div class="flex flex-col space-y-3">
+                                   <button class="btn-glow font-semibold py-3 px-6 rounded-full w-48 mx-auto">Where To Go</button>
+                                   <button class="btn-glow font-semibold py-3 px-6 rounded-full w-48 mx-auto">Direction</button>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Emergency Exit -->
+                            <div class="card rounded-2xl p-6 text-center flex flex-col justify-between h-72 relative overflow-visible opacity-0 fade-in-up" style="animation-delay: 1s;">
+                                
+                                <div>
+                                    <p class="text-xs text-gray-400 mb-4">LET'S CHECK FOR</p>
+                                    <h2 class="text-3xl font-bold text-white leading-tight">EMERGENCY EXIT AND TIME</h2>
+                                </div>
+                                <button class="btn-glow font-semibold py-3 px-6 rounded-full w-48 mx-auto">
+                                    <span>Click Here</span>
+                                </button>
+                            </div>
+                        </main>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const wrapper = document.getElementById('dashboard-wrapper');
+        const cards = document.querySelectorAll('.card');
+
+        // Parallax effect for the main container
+        document.body.addEventListener('mousemove', (e) => {
+            const { clientX, clientY } = e;
+            const x = (clientX / window.innerWidth) - 0.5;
+            const y = (clientY / window.innerHeight) - 0.5;
+            
+            wrapper.style.transform = `perspective(1000px) rotateX(${-y * 5}deg) rotateY(${x * 5}deg) scale3d(0.95, 0.95, 0.95)`;
+        });
+
+        // 3D tilt effect for cards
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                card.style.transform = `perspective(1000px) rotateX(${-y / 15}deg) rotateY(${x / 15}deg) scale3d(1.05, 1.05, 1.05)`;
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+            });
+        });
+    </script>
+
+</body>
+</html>
