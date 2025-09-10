@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Crowd Detection</title>
+    <style>
+        body { text-align: center; font-family: Arial; background: #111; color: #fff; }
+        #video { border: 5px solid #444; margin-top: 20px; border-radius: 10px; }
+        button { margin: 10px; padding: 10px 25px; font-size: 18px; border-radius: 8px; cursor: pointer; }
+        .start { background: green; color: white; }
+        .stop { background: red; color: white; }
+        #alertBox { margin-top: 20px; font-size: 24px; font-weight: bold; color: red; }
+    </style>
+    <script>
+        let alertCheck;
+        let audio = new Audio("/static/beep.mp3");
+
+        function startVideo() {
+            fetch("/start").then(() => {
+                document.getElementById("video").src = "/video";
+                alertCheck = setInterval(checkAlert, 1000);
+            });
+        }
+
+        function stopVideo() {
+            fetch("/stop").then(() => {
+                document.getElementById("video").src = "";
+                clearInterval(alertCheck);
+                document.getElementById("alertBox").innerText = "";
+            });
+        }
+
+        function checkAlert() {
+            fetch("/alert")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.alert) {
+                        document.getElementById("alertBox").innerText = "🚨 Crowd Detected!";
+                        audio.play();  // 🔊 play beep sound
+                    } else {
+                        document.getElementById("alertBox").innerText = "";
+                    }
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>👥 Crowd Detection System</h1>
+    <button class="start" onclick="startVideo()">Start</button>
+    <button class="stop" onclick="stopVideo()">Stop</button>
+    <br>
+    <img id="video" width="720" height="480">
+    <div id="alertBox"></div>
+</body>
+</html>
