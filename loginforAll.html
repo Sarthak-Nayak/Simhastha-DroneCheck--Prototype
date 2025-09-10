@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabbed Animated OTP Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* --- Base Styles --- */
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #252432;
+            padding: 20px;
+        }
+
+        /* --- Custom Property for Animation --- */
+        @property --a {
+            syntax: '<angle>';
+            inherits: false;
+            initial-value: 0deg;
+        }
+
+        /* --- Main Animated Container --- */
+        .box {
+            position: relative;
+            width: 400px;
+            height: 250px; /* Initial compact height */
+            background: repeating-conic-gradient(from var(--a), #ff2770 0%, #ff2770 5%, transparent 5%, transparent 40%, #ff2770 50%);
+            filter: drop-shadow(0 15px 50px #000);
+            animation: rotating 4s linear infinite;
+            border-radius: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .box:hover {
+            width: 450px;
+            height: 550px; /* Expand height on hover */
+        }
+
+        /* --- Keyframe Animation for Rotation --- */
+        @keyframes rotating {
+            0% { --a: 0deg; }
+            100% { --a: 360deg; }
+        }
+
+        /* --- Animated Borders (Pseudo-elements) --- */
+        .box::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: repeating-conic-gradient(from var(--a), #45f3ff 0%, #45f3ff 5%, transparent 5%, transparent 40%, #45f3ff 50%);
+            filter: drop-shadow(0 15px 50px #000);
+            border-radius: 20px;
+            animation: rotating 4s linear infinite;
+            animation-delay: -1s;
+        }
+
+        .box::after {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            background: #2d2d39;
+            border-radius: 15px;
+            border: 8px solid #25252b;
+        }
+
+        /* --- Main Content Container --- */
+        .login-container {
+            position: absolute;
+            inset: 20px;
+            display: flex;
+            justify-content: flex-start; /* Align content to the top */
+            align-items: center;
+            border-radius: 15px;
+            flex-direction: column;
+            z-index: 1000;
+            color: #fff;
+            overflow: hidden;
+            padding: 30px 20px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .box:hover .login-container {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* --- Tab Navigation --- */
+        .tab-nav {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            text-transform: uppercase;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #45f3ff;
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            color: #45f3ff;
+        }
+        
+        .tab-btn.active::after {
+            transform: scaleX(1);
+        }
+
+
+        /* --- Login Forms --- */
+        .login-form {
+            width: 100%;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            gap: 15px;
+            animation: fadeIn 0.5s;
+        }
+
+        .login-form.active {
+            display: flex; /* Shown when active */
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .login-form h3 {
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-weight: 600;
+            text-align: center;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .login-form h3 i {
+            margin-right: 10px;
+            color: #ff2770;
+            text-shadow: 0 0 5px #ff2770, 0 0 30px #ff2770;
+        }
+        
+        .login-form.police h3 i {
+             color: #2bff88;
+             text-shadow: 0 0 5px #2bff88, 0 0 30px #2bff88;
+        }
+        
+        .login-form.security h3 i {
+             color: #ffeb3b;
+             text-shadow: 0 0 5px #ffeb3b, 0 0 30px #ffeb3b;
+        }
+        
+        /* Added style for the new User icon */
+        .login-form.user h3 i {
+             color: #45f3ff;
+             text-shadow: 0 0 5px #45f3ff, 0 0 30px #45f3ff;
+        }
+
+        .login-form input, .login-form button {
+            width: 100%;
+            padding: 10px 20px;
+            outline: none;
+            font-size: 1em;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid #fff;
+            border-radius: 30px;
+        }
+        
+        .login-form input::placeholder { color:#999; }
+
+        .login-form button {
+            background: #45f3ff;
+            border: none;
+            font-weight: 500;
+            color: #111;
+            cursor: pointer;
+            transition: 0.5s;
+        }
+        
+        .login-form button:hover {
+            box-shadow: 0 0 10px #45f3ff, 0 0 60px #45f3ff;
+        }
+
+        .login-form p {
+             font-weight: bold;
+             min-height: 24px;
+             text-align: center;
+        }
+        
+        #recaptcha-container {
+            margin-top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <div class="login-container">
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="showForm('official')">Official</button>
+                <button class="tab-btn" onclick="showForm('police')">Police</button>
+                <button class="tab-btn" onclick="showForm('security')">Security</button>
+                <button class="tab-btn" onclick="showForm('user')">User</button>
+            </div>
+            
+            <div class="login-form official active" id="official-form">
+                <h3><i class="fa-solid fa-user-tie"></i> Official Login</h3>
+                <input type="text" id="officialPhone" placeholder="+91 XXXXXXXXXX">
+                <button onclick="sendOTP('official')">Send OTP</button>
+                <input type="text" id="officialOtp" placeholder="Enter OTP">
+                <button onclick="verifyOTP('official')">Verify OTP</button>
+                <p id="officialStatus"></p>
+            </div>
+            
+            <div class="login-form police" id="police-form">
+                <h3><i class="fa-solid fa-shield-halved"></i> Police Login</h3>
+                <input type="text" id="policePhone" placeholder="+91 XXXXXXXXXX">
+                <button onclick="sendOTP('police')">Send OTP</button>
+                <input type="text" id="policeOtp" placeholder="Enter OTP">
+                <button onclick="verifyOTP('police')">Verify OTP</button>
+                <p id="policeStatus"></p>
+            </div>
+            
+            <div class="login-form security" id="security-form">
+                <h3><i class="fa-solid fa-user-secret"></i> Security Login</h3>
+                <input type="text" id="securityPhone" placeholder="+91 XXXXXXXXXX">
+                <button onclick="sendOTP('security')">Send OTP</button>
+                <input type="text" id="securityOtp" placeholder="Enter OTP">
+                <button onclick="verifyOTP('security')">Verify OTP</button>
+                <p id="securityStatus"></p>
+            </div>
+
+            <div class="login-form user" id="user-form">
+                <h3><i class="fa-solid fa-user"></i> User Login</h3>
+                <input type="text" id="userPhone" placeholder="+91 XXXXXXXXXX">
+                <button onclick="sendOTP('user')">Send OTP</button>
+                <input type="text" id="userOtp" placeholder="Enter OTP">
+                <button onclick="verifyOTP('user')">Verify OTP</button>
+                <p id="userStatus"></p>
+            </div>
+            
+            <div id="recaptcha-container"></div>
+        </div>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+    
+    <script>
+        // IMPORTANT: Replace with your actual Firebase project configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    
+    <script>
+        function showForm(role) {
+            // Hide all forms and remove active class from all buttons
+            document.querySelectorAll('.login-form').forEach(form => form.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Show the selected form and set its button to active
+            document.getElementById(`${role}-form`).classList.add('active');
+            document.querySelector(`.tab-btn[onclick="showForm('${role}')"]`).classList.add('active');
+        }
+
+        const auth = firebase.auth();
+        // Added 'user' to the confirmation results object
+        let confirmationResults = { official: null, police: null, security: null, user: null };
+
+        window.onload = function () {
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+                'size': 'invisible',
+                'callback': (response) => console.log("reCAPTCHA solved"),
+            });
+            recaptchaVerifier.render();
+        };
+
+        function sendOTP(role) {
+            const phoneInput = document.getElementById(`${role}Phone`);
+            const statusP = document.getElementById(`${role}Status`);
+            const phoneNumber = phoneInput.value;
+
+            if (!phoneNumber) {
+                statusP.innerText = "Please enter a phone number.";
+                return;
+            }
+
+            auth.signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+                .then((result) => {
+                    confirmationResults[role] = result;
+                    statusP.innerText = "✅ OTP Sent!";
+                    console.log(`OTP sent for ${role}`);
+                }).catch((error) => {
+                    console.error(`Error sending OTP for ${role}:`, error);
+                    statusP.innerText = "❌ Error sending OTP.";
+                    grecaptcha.reset();
+                });
+        }
+
+        function verifyOTP(role) {
+            const otpInput = document.getElementById(`${role}Otp`);
+            const statusP = document.getElementById(`${role}Status`);
+            const otp = otpInput.value;
+
+            if (!confirmationResults[role]) {
+                statusP.innerText = "Please send OTP first.";
+                return;
+            }
+            if (!otp) {
+                statusP.innerText = "Please enter the OTP.";
+                return;
+            }
+
+            confirmationResults[role].confirm(otp)
+                .then((result) => {
+                    statusP.innerText = `✅ Logged in as ${role}!`;
+                    console.log(`User logged in as ${role}:`, result.user);
+                }).catch((error) => {
+                    console.error(`Error verifying OTP for ${role}:`, error);
+                    statusP.innerText = "❌ OTP Verification Failed";
+                });
+        }
+    </script>
+</body>
+</html>
